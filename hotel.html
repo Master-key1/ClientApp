@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hotel Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 500px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #ccc;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 12px;
+            border-radius: 6px;
+            border: 1px solid #888;
+            font-size: 15px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056c7;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #e8f4ff;
+        }
+        .label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Fetch Hotel Details</h2>
+
+    <label>Enter Hotel ID</label>
+    <input type="text" id="hotelId" placeholder="Ex: Aurus-981">
+
+    <button onclick="getHotelData()">Get Details</button>
+
+    <div id="result" class="result-box" style="display:none;"></div>
+</div>
+
+<script>
+function getHotelData() {
+    let hotelId = document.getElementById("hotelId").value.trim();
+
+    if(hotelId === "") {
+        alert("Please enter a Hotel ID");
+        return;
+    }
+
+    fetch("http://localhost:8080/hotel/" + hotelId)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Hotel not found!");
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById("result").style.display = "block";
+            document.getElementById("result").innerHTML = `
+                <p><span class="label">Hotel ID:</span> ${data.hotelId}</p>
+                <p><span class="label">Hotel Name:</span> ${data.hotelName}</p>
+                <p><span class="label">Location:</span> ${data.hotelLoc}</p>
+                <p><span class="label">Booking Date:</span> ${data.hotelBookDate}</p>
+            `;
+        })
+        .catch(error => {
+            document.getElementById("result").style.display = "block";
+            document.getElementById("result").innerHTML = `<p style="color:red;">${error.message}</p>`;
+        });
+}
+</script>
+
+</body>
+</html>
